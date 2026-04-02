@@ -16,6 +16,8 @@
   const STYLE_ID = "pipette-style";
   const ACTIVE_CLASS = "pipette-active";
   const POINTER_SAMPLE_DELAY = 24;
+  const PANEL_MARGIN = 18;
+  const MAX_PANELS = 5;
   const CURSOR_DATA_URL = `data:image/svg+xml,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 508 508" width="32" height="32">
       <path fill="#000000" d="M 413 6 L 412 7 L 408 7 L 407 8 L 404 8 L 403 9 L 400 9 L 399 10 L 397 10 L 396 11 L 395 11 L 394 12 L 393 12 L 392 13 L 391 13 L 390 14 L 388 14 L 386 16 L 385 16 L 384 17 L 383 17 L 381 19 L 380 19 L 377 22 L 376 22 L 363 35 L 363 36 L 359 40 L 359 41 L 356 44 L 356 45 L 354 47 L 354 48 L 352 50 L 352 51 L 350 53 L 350 54 L 348 56 L 348 57 L 347 58 L 347 59 L 345 61 L 345 62 L 344 63 L 344 64 L 342 66 L 342 67 L 341 68 L 341 69 L 340 70 L 340 71 L 338 73 L 338 74 L 337 75 L 337 76 L 336 77 L 336 78 L 335 79 L 335 80 L 334 81 L 334 82 L 333 83 L 333 84 L 332 85 L 332 86 L 331 87 L 331 88 L 330 89 L 330 90 L 329 91 L 329 93 L 328 94 L 328 95 L 327 96 L 327 97 L 326 98 L 326 100 L 325 101 L 325 102 L 324 103 L 324 104 L 323 105 L 323 107 L 322 108 L 322 110 L 321 111 L 321 112 L 320 113 L 320 114 L 319 115 L 318 115 L 311 108 L 310 108 L 309 107 L 308 107 L 307 106 L 306 106 L 305 105 L 295 105 L 294 106 L 293 106 L 292 107 L 291 107 L 254 144 L 254 145 L 252 147 L 252 149 L 251 150 L 251 158 L 252 159 L 252 161 L 256 165 L 256 166 L 259 169 L 256 172 L 256 173 L 254 175 L 253 175 L 170 258 L 170 259 L 168 261 L 167 261 L 45 383 L 45 384 L 41 388 L 41 389 L 40 390 L 40 391 L 38 393 L 38 394 L 37 395 L 37 397 L 36 398 L 36 401 L 35 402 L 35 406 L 34 407 L 34 415 L 33 416 L 33 423 L 32 424 L 32 432 L 31 433 L 31 437 L 30 438 L 30 440 L 29 441 L 29 442 L 13 458 L 13 459 L 10 462 L 10 463 L 9 464 L 9 465 L 8 466 L 8 467 L 7 468 L 7 470 L 6 471 L 6 482 L 7 483 L 7 486 L 9 488 L 9 489 L 10 490 L 10 491 L 16 497 L 17 497 L 18 498 L 19 498 L 20 499 L 21 499 L 22 500 L 24 500 L 25 501 L 37 501 L 38 500 L 40 500 L 41 499 L 42 499 L 43 498 L 44 498 L 48 494 L 49 494 L 64 479 L 65 479 L 66 478 L 67 478 L 68 477 L 69 477 L 70 476 L 75 476 L 76 475 L 83 475 L 84 474 L 92 474 L 93 473 L 101 473 L 102 472 L 106 472 L 107 471 L 110 471 L 111 470 L 112 470 L 113 469 L 114 469 L 115 468 L 116 468 L 117 467 L 118 467 L 123 462 L 124 462 L 253 333 L 253 332 L 255 330 L 256 330 L 325 261 L 325 260 L 327 258 L 328 258 L 338 248 L 343 253 L 344 253 L 345 254 L 346 254 L 347 255 L 349 255 L 350 256 L 358 256 L 359 255 L 360 255 L 361 254 L 362 254 L 400 216 L 400 215 L 401 214 L 401 213 L 402 212 L 402 208 L 403 207 L 403 205 L 402 204 L 402 201 L 401 200 L 401 199 L 399 197 L 399 196 L 391 188 L 392 187 L 394 187 L 395 186 L 397 186 L 398 185 L 400 185 L 401 184 L 402 184 L 403 183 L 405 183 L 406 182 L 407 182 L 408 181 L 409 181 L 410 180 L 412 180 L 413 179 L 414 179 L 415 178 L 416 178 L 417 177 L 418 177 L 419 176 L 420 176 L 421 175 L 422 175 L 423 174 L 424 174 L 425 173 L 426 173 L 427 172 L 428 172 L 429 171 L 430 171 L 431 170 L 432 170 L 433 169 L 434 169 L 435 168 L 436 168 L 437 167 L 438 167 L 440 165 L 441 165 L 442 164 L 443 164 L 445 162 L 446 162 L 447 161 L 448 161 L 450 159 L 451 159 L 453 157 L 454 157 L 455 156 L 456 156 L 459 153 L 460 153 L 462 151 L 463 151 L 466 148 L 467 148 L 470 145 L 471 145 L 484 132 L 484 131 L 487 128 L 487 127 L 489 125 L 489 124 L 491 122 L 491 121 L 492 120 L 492 119 L 493 118 L 493 117 L 494 116 L 494 115 L 495 114 L 495 113 L 496 112 L 496 110 L 497 109 L 497 107 L 498 106 L 498 104 L 499 103 L 499 100 L 500 99 L 500 94 L 501 93 L 501 72 L 500 71 L 500 66 L 499 65 L 499 62 L 498 61 L 498 59 L 497 58 L 497 56 L 496 55 L 496 54 L 495 53 L 495 51 L 494 50 L 494 49 L 493 48 L 493 47 L 491 45 L 491 44 L 490 43 L 490 42 L 488 40 L 488 39 L 486 37 L 486 36 L 479 29 L 479 28 L 478 28 L 472 22 L 471 22 L 468 19 L 467 19 L 466 18 L 465 18 L 463 16 L 462 16 L 461 15 L 460 15 L 459 14 L 458 14 L 457 13 L 456 13 L 455 12 L 454 12 L 453 11 L 451 11 L 450 10 L 448 10 L 447 9 L 445 9 L 444 8 L 441 8 L 440 7 L 435 7 L 434 6 Z"/>
@@ -31,20 +33,17 @@
     canvas: null,
     context: null,
     currentColor: null,
-    hexValue: null,
     lastPoint: { x: 0, y: 0 },
+    panelContainer: null,
     pending: false,
-    popup: null,
-    popupPinned: false,
+    preview: null,
+    savedPanels: [],
     refreshInFlight: false,
     refreshTimer: null,
     sampleTimer: null,
-    rgbValue: null,
-    rgbaValue: null,
     root: null,
-    statusLine: null,
     styleTag: null,
-    swatch: null
+    previewSwatch: null
   };
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -92,7 +91,6 @@
     state.active = false;
     state.pending = false;
     state.currentColor = null;
-    state.popupPinned = false;
     clearTimeout(state.refreshTimer);
     state.refreshTimer = null;
     clearTimeout(state.sampleTimer);
@@ -103,10 +101,7 @@
       state.root.hidden = true;
       state.root.style.visibility = "visible";
     }
-
-    if (state.statusLine) {
-      state.statusLine.textContent = "Click to pin this color";
-    }
+    clearSavedPanels();
 
     document.documentElement.classList.remove(ACTIVE_CLASS);
   }
@@ -132,9 +127,20 @@
           display: none !important;
         }
 
-        #${ROOT_ID} .pipette-popup {
+        #${ROOT_ID} .pipette-panels {
           position: fixed;
+          top: ${PANEL_MARGIN}px;
+          right: ${PANEL_MARGIN}px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
           width: 220px;
+          pointer-events: auto;
+        }
+
+        #${ROOT_ID} .pipette-popup {
+          position: relative;
+          width: 100%;
           padding: 12px 12px 10px;
           border-radius: 12px;
           border: 1px solid rgba(255, 255, 255, 0.12);
@@ -145,6 +151,19 @@
           backdrop-filter: blur(10px);
           pointer-events: auto;
           user-select: text;
+          overflow: visible;
+        }
+
+        #${ROOT_ID} .pipette-preview {
+          position: fixed;
+          width: 20px;
+          height: 20px;
+          border-radius: 999px;
+          border: 2px solid rgba(255, 255, 255, 0.95);
+          box-shadow:
+            0 0 0 1px rgba(15, 23, 42, 0.35),
+            0 10px 24px rgba(0, 0, 0, 0.28);
+          pointer-events: none;
         }
 
         #${ROOT_ID} .pipette-popup-header {
@@ -152,6 +171,13 @@
           align-items: center;
           gap: 10px;
           margin-bottom: 8px;
+        }
+
+        #${ROOT_ID} .pipette-panel-meta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
         }
 
         #${ROOT_ID} .pipette-swatch {
@@ -168,10 +194,14 @@
           color: #ffffff;
         }
 
-        #${ROOT_ID} .pipette-status {
-          margin-top: 2px;
+        #${ROOT_ID} .pipette-status,
+        #${ROOT_ID} .pipette-panel-index {
           font: 10px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
           color: rgba(249, 250, 251, 0.58);
+        }
+
+        #${ROOT_ID} .pipette-status {
+          margin-top: 2px;
         }
 
         #${ROOT_ID} .pipette-row {
@@ -194,6 +224,11 @@
           font: inherit;
         }
 
+        #${ROOT_ID} .pipette-copy,
+        #${ROOT_ID} .pipette-copy * {
+          cursor: copy !important;
+        }
+
         #${ROOT_ID} .pipette-copy:hover .pipette-value,
         #${ROOT_ID} .pipette-copy:focus-visible .pipette-value {
           color: #93c5fd;
@@ -203,6 +238,30 @@
           outline: 1px solid rgba(147, 197, 253, 0.9);
           outline-offset: 6px;
           border-radius: 8px;
+        }
+
+        #${ROOT_ID} .pipette-close {
+          position: absolute;
+          top: -10px;
+          left: -10px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 26px;
+          height: 26px;
+          border: 0;
+          border-radius: 999px;
+          background: rgba(17, 24, 39, 0.94);
+          box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+          color: rgba(249, 250, 251, 0.72);
+          cursor: pointer !important;
+          font: 600 16px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          padding: 0;
+        }
+
+        #${ROOT_ID} .pipette-close:hover,
+        #${ROOT_ID} .pipette-close:focus-visible {
+          color: #ffffff;
         }
 
         #${ROOT_ID} .pipette-label {
@@ -229,50 +288,25 @@
     state.root.id = ROOT_ID;
     state.root.hidden = true;
 
-    state.popup = document.createElement("div");
-    state.popup.className = "pipette-popup";
+    state.preview = document.createElement("div");
+    state.preview.className = "pipette-preview";
+    state.previewSwatch = state.preview;
 
-    const header = document.createElement("div");
-    header.className = "pipette-popup-header";
+    state.panelContainer = document.createElement("div");
+    state.panelContainer.className = "pipette-panels";
 
-    state.swatch = document.createElement("div");
-    state.swatch.className = "pipette-swatch";
-
-    const headingText = document.createElement("div");
-
-    const title = document.createElement("div");
-    title.className = "pipette-title";
-    title.textContent = "Pipette";
-
-    state.statusLine = document.createElement("div");
-    state.statusLine.className = "pipette-status";
-    state.statusLine.textContent = "Click to pin this color";
-
-    headingText.append(title, state.statusLine);
-    header.append(state.swatch, headingText);
-
-    const hexRow = buildValueRow("HEX");
-    state.hexValue = hexRow.value;
-
-    const rgbRow = buildValueRow("RGB");
-    state.rgbValue = rgbRow.value;
-
-    const rgbaRow = buildValueRow("RGBA");
-    state.rgbaValue = rgbaRow.value;
-
-    state.popup.append(header, hexRow.row, rgbRow.row, rgbaRow.row);
-    state.root.append(state.popup);
+    state.root.append(state.preview, state.panelContainer);
     document.documentElement.appendChild(state.root);
   }
 
-  function buildValueRow(label) {
+  function buildValueRow(label, text) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "pipette-row pipette-copy";
     button.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      void copyColorValue(label);
+      void copyColorValue(text);
     });
 
     const heading = document.createElement("span");
@@ -281,11 +315,11 @@
 
     const value = document.createElement("div");
     value.className = "pipette-value";
-    value.textContent = "--";
+    value.textContent = text;
 
     button.append(heading, value);
 
-    return { row: button, value };
+    return { row: button };
   }
 
   function hideUiForCapture() {
@@ -344,7 +378,7 @@
       return;
     }
 
-    if (state.popupPinned || state.popup?.contains(event.target)) {
+    if (state.panelContainer?.contains(event.target)) {
       return;
     }
 
@@ -374,7 +408,7 @@
   }
 
   function updateColorAtPoint(clientX, clientY) {
-    if (!state.context || !state.canvas || !state.popup) {
+    if (!state.context || !state.canvas || !state.preview) {
       return;
     }
 
@@ -390,13 +424,9 @@
     const rgba = `rgba(${r}, ${g}, ${b}, ${formatAlpha(a)})`;
 
     state.currentColor = { hex, rgb, rgba };
-    state.swatch.style.backgroundColor = rgba;
-    state.hexValue.textContent = hex;
-    state.rgbValue.textContent = rgb;
-    state.rgbaValue.textContent = rgba;
-    state.statusLine.textContent = state.popupPinned ? "Pinned. Click a value to copy" : "Click to pin this color";
-
-    positionPopup(clientX, clientY);
+    state.previewSwatch.style.backgroundColor = rgba;
+    positionPreview(clientX, clientY);
+    state.preview.hidden = false;
   }
 
   function sampleColor(clientX, clientY) {
@@ -418,27 +448,14 @@
     };
   }
 
-  function positionPopup(clientX, clientY) {
-    const margin = 18;
-    const width = state.popup.offsetWidth || 186;
-    const height = state.popup.offsetHeight || 138;
+  function positionPreview(clientX, clientY) {
+    const margin = 14;
+    const size = state.preview.offsetWidth || 20;
+    const left = clamp(clientX + 18, margin, Math.max(margin, window.innerWidth - size - margin));
+    const top = clamp(clientY - Math.round(size / 2), margin, Math.max(margin, window.innerHeight - size - margin));
 
-    let left = clientX + 24;
-    let top = clientY + 24;
-
-    if (left + width + margin > window.innerWidth) {
-      left = clientX - width - 24;
-    }
-
-    if (top + height + margin > window.innerHeight) {
-      top = clientY - height - 24;
-    }
-
-    left = clamp(left, margin, Math.max(margin, window.innerWidth - width - margin));
-    top = clamp(top, margin, Math.max(margin, window.innerHeight - height - margin));
-
-    state.popup.style.left = `${left}px`;
-    state.popup.style.top = `${top}px`;
+    state.preview.style.left = `${left}px`;
+    state.preview.style.top = `${top}px`;
   }
 
   function scheduleRefreshCapture() {
@@ -479,7 +496,7 @@
       return;
     }
 
-    if (state.popup?.contains(event.target)) {
+    if (state.panelContainer?.contains(event.target)) {
       return;
     }
 
@@ -488,32 +505,21 @@
 
     if (event.type === "click" && state.active) {
       updateColorAtPoint(event.clientX, event.clientY);
-      state.popupPinned = true;
-
-      if (state.statusLine) {
-        state.statusLine.textContent = "Pinned. Click a value to copy";
+      if (state.currentColor) {
+        addSavedPanel(state.currentColor);
       }
     }
   }
 
-  async function copyColorValue(label) {
-    if (!state.currentColor) {
+  async function copyColorValue(text) {
+    if (!text) {
       return;
     }
 
     try {
-      const value = state.currentColor[label.toLowerCase()];
-      await copyText(value);
-
-      if (state.statusLine) {
-        state.statusLine.textContent = `Copied ${label}`;
-      }
+      await copyText(text);
     } catch (error) {
       console.warn("Pipette clipboard copy failed:", error);
-
-      if (state.statusLine) {
-        state.statusLine.textContent = "Clipboard copy failed";
-      }
     }
   }
 
@@ -521,6 +527,92 @@
     if ((state.active || state.pending) && event.key === "Escape") {
       deactivate();
     }
+  }
+
+  function addSavedPanel(color) {
+    const panelData = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      color
+    };
+
+    state.savedPanels.unshift(panelData);
+
+    if (state.savedPanels.length > MAX_PANELS) {
+      state.savedPanels.length = MAX_PANELS;
+    }
+
+    renderSavedPanels();
+  }
+
+  function clearSavedPanels() {
+    state.savedPanels = [];
+
+    if (state.panelContainer) {
+      state.panelContainer.replaceChildren();
+    }
+  }
+
+  function removeSavedPanel(id) {
+    state.savedPanels = state.savedPanels.filter((panel) => panel.id !== id);
+    renderSavedPanels();
+  }
+
+  function renderSavedPanels() {
+    if (!state.panelContainer) {
+      return;
+    }
+
+    state.panelContainer.replaceChildren();
+
+    for (const [index, panel] of state.savedPanels.entries()) {
+      state.panelContainer.appendChild(buildSavedPanel(panel, index));
+    }
+  }
+
+  function buildSavedPanel(panel, index) {
+    const card = document.createElement("div");
+    card.className = "pipette-popup";
+
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.className = "pipette-close";
+    closeButton.textContent = "×";
+    closeButton.setAttribute("aria-label", `Remove saved color ${index + 1}`);
+    closeButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      removeSavedPanel(panel.id);
+    });
+
+    const header = document.createElement("div");
+    header.className = "pipette-popup-header";
+
+    const swatch = document.createElement("div");
+    swatch.className = "pipette-swatch";
+    swatch.style.backgroundColor = panel.color.rgba;
+
+    const headingText = document.createElement("div");
+    const title = document.createElement("div");
+    title.className = "pipette-title";
+    title.textContent = panel.color.hex;
+
+    const status = document.createElement("div");
+    status.className = "pipette-status";
+    status.textContent = "Click a value to copy";
+    headingText.append(title, status);
+
+    const meta = document.createElement("div");
+    meta.className = "pipette-panel-meta";
+
+    const indexLabel = document.createElement("div");
+    indexLabel.className = "pipette-panel-index";
+    indexLabel.textContent = `Saved ${index + 1}`;
+
+    meta.append(indexLabel);
+    header.append(swatch, headingText);
+    card.append(closeButton, header, meta, buildValueRow("HEX", panel.color.hex).row, buildValueRow("RGB", panel.color.rgb).row, buildValueRow("RGBA", panel.color.rgba).row);
+
+    return card;
   }
 
   function loadImage(dataUrl) {
