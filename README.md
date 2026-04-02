@@ -11,6 +11,7 @@ Very small Brave/Chrome extension that lets you toggle a hover color picker on a
   - `HEX`
   - `RGB`
   - `RGBA`
+- Click anywhere on the page to copy the current `HEX` color to the clipboard and close the picker.
 
 ## Load it in Brave
 
@@ -33,4 +34,5 @@ The default shortcut is:
 ## Notes
 
 - Press `Esc` to close the picker.
+- Click copies the current `HEX` value to your clipboard.
 - The extension works on regular web pages, not Brave internal pages like `brave://...`.

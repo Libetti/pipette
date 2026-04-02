@@ -18,8 +18,8 @@
   const POINTER_SAMPLE_DELAY = 24;
   const CURSOR_DATA_URL = `data:image/svg+xml,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <path fill="#111827" stroke="#ffffff" stroke-width="1.8" stroke-linejoin="round" d="M20.1 4.2l7.7 7.7-3.1 3.1-2.2-2.2-4.8 4.8 1.4 1.4-2.2 2.2-1.4-1.4-6.1 6.1c-.9.9-2.5.9-3.4 0l-.6-.6c-.9-.9-.9-2.5 0-3.4l6.1-6.1-1.4-1.4 2.2-2.2 1.4 1.4 4.8-4.8-2.2-2.2 3.1-3.1z"/>
-      <circle cx="7.4" cy="24.6" r="2.6" fill="#ffffff" stroke="#111827" stroke-width="1.2"/>
+      <path fill="#111827" stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round" d="M22.6 4.4l5 5-2.2 2.2-1.6-1.6-5.2 5.2 1.1 1.1-1.9 1.9-1.1-1.1-7.4 7.4c-.7.7-1.9.7-2.5 0l-.3-.3c-.7-.7-.7-1.9 0-2.5l7.4-7.4-1.1-1.1 1.9-1.9 1.1 1.1 5.2-5.2-1.6-1.6 2.2-2.2z"/>
+      <path fill="#ffffff" d="M8.3 24.8l1 1 2.1-2.1-1-1z"/>
     </svg>`
   )}`;
 
@@ -28,7 +28,7 @@
     captureToken: 0,
     canvas: null,
     context: null,
-    halo: null,
+    currentHex: null,
     hexValue: null,
     lastPoint: { x: 0, y: 0 },
     pending: false,
@@ -89,6 +89,7 @@
   function deactivate() {
     state.active = false;
     state.pending = false;
+    state.currentHex = null;
     state.popupPinned = false;
     clearTimeout(state.refreshTimer);
     state.refreshTimer = null;
@@ -99,6 +100,10 @@
     if (state.root) {
       state.root.hidden = true;
       state.root.style.visibility = "visible";
+    }
+
+    if (state.statusLine) {
+      state.statusLine.textContent = "Click copies HEX";
     }
 
     document.documentElement.classList.remove(ACTIVE_CLASS);
@@ -123,20 +128,6 @@
 
         #${ROOT_ID}[hidden] {
           display: none !important;
-        }
-
-        #${ROOT_ID} .pipette-halo {
-          position: fixed;
-          width: 20px;
-          height: 20px;
-          margin-left: -10px;
-          margin-top: -10px;
-          border-radius: 999px;
-          border: 2px solid rgba(255, 255, 255, 0.95);
-          box-shadow:
-            0 0 0 1px rgba(17, 24, 39, 0.85),
-            0 0 0 8px rgba(17, 24, 39, 0.18);
-          background: transparent;
         }
 
         #${ROOT_ID} .pipette-popup {
@@ -213,9 +204,6 @@
     state.root.id = ROOT_ID;
     state.root.hidden = true;
 
-    state.halo = document.createElement("div");
-    state.halo.className = "pipette-halo";
-
     state.popup = document.createElement("div");
     state.popup.className = "pipette-popup";
     state.popup.addEventListener("pointerenter", () => {
@@ -239,7 +227,7 @@
 
     state.statusLine = document.createElement("div");
     state.statusLine.className = "pipette-status";
-    state.statusLine.textContent = "Esc closes";
+    state.statusLine.textContent = "Click copies HEX";
 
     headingText.append(title, state.statusLine);
     header.append(state.swatch, headingText);
@@ -254,7 +242,7 @@
     state.rgbaValue = rgbaRow.value;
 
     state.popup.append(header, hexRow.row, rgbRow.row, rgbaRow.row);
-    state.root.append(state.halo, state.popup);
+    state.root.append(state.popup);
     document.documentElement.appendChild(state.root);
   }
 
@@ -361,7 +349,7 @@
   }
 
   function updateColorAtPoint(clientX, clientY) {
-    if (!state.context || !state.canvas || !state.popup || !state.halo) {
+    if (!state.context || !state.canvas || !state.popup) {
       return;
     }
 
@@ -376,14 +364,12 @@
     const rgb = `rgb(${r}, ${g}, ${b})`;
     const rgba = `rgba(${r}, ${g}, ${b}, ${formatAlpha(a)})`;
 
+    state.currentHex = hex;
     state.swatch.style.backgroundColor = rgba;
     state.hexValue.textContent = hex;
     state.rgbValue.textContent = rgb;
     state.rgbaValue.textContent = rgba;
-    state.statusLine.textContent = "Esc or shortcut closes";
-
-    state.halo.style.left = `${clientX}px`;
-    state.halo.style.top = `${clientY}px`;
+    state.statusLine.textContent = "Click copies HEX";
 
     positionPopup(clientX, clientY);
   }
@@ -474,6 +460,28 @@
 
     event.preventDefault();
     event.stopPropagation();
+
+    if (event.type === "click" && state.active) {
+      updateColorAtPoint(event.clientX, event.clientY);
+      void copySelectionAndClose();
+    }
+  }
+
+  async function copySelectionAndClose() {
+    if (!state.currentHex) {
+      return;
+    }
+
+    try {
+      await copyText(state.currentHex);
+      deactivate();
+    } catch (error) {
+      console.warn("Pipette clipboard copy failed:", error);
+
+      if (state.statusLine) {
+        state.statusLine.textContent = "Clipboard copy failed";
+      }
+    }
   }
 
   function handleKeydown(event) {
@@ -511,5 +519,32 @@
 
   function clamp(value, min, max) {
     return Math.min(max, Math.max(min, value));
+  }
+
+  async function copyText(text) {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return;
+    }
+
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.top = "-9999px";
+    textArea.style.left = "-9999px";
+    document.documentElement.appendChild(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, text.length);
+
+    try {
+      const copied = document.execCommand("copy");
+
+      if (!copied) {
+        throw new Error("document.execCommand('copy') returned false.");
+      }
+    } finally {
+      textArea.remove();
+    }
   }
 })();
