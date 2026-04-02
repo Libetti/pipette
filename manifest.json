@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Pipette",
+  "version": "0.1.0",
+  "description": "A very simple hover color picker for Brave.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "action": {
+    "default_title": "Toggle Pipette"
+  },
+  "commands": {
+    "toggle-picker": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Toggle the Pipette color picker"
+    }
+  }
+}
